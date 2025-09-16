@@ -1,6 +1,6 @@
-import { Audit } from "./audit.js";
 import * as fs from "fs"
-import { Message } from './message.js';
+import { Audit } from "./src/audit.js";
+import { Message } from './src/message.js';
 
 const configuration = JSON.parse(fs.readFileSync("config.json"))
 var exitValue = 0
