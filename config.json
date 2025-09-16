@@ -5,14 +5,14 @@
             "branch": "master",
             "maxCritical": 0,
             "maxHigh": 0,
-            "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=3m8Fv1xw-9Ef6GbUwXshVEmeDoKZWKCjYt3CejEozZE"
+            "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=xxxEXEMPLExxx"
         },        
         {
             "path": "c:\\git\\receitas\\grr-client",
             "branch": "main",
             "maxCritical": 0,
             "maxHigh": 0,
-            "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=3m8Fv1xw-9Ef6GbUwXshVEmeDoKZWKCjYt3CejEozZE"
+            "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=xxxEXEMPLExxx"
         }
     ]
 
