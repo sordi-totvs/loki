@@ -1,13 +1,15 @@
 import axios from "axios";
-
 export class Message {
-    async send(text) {
-        let endpoint = "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=3m8Fv1xw-9Ef6GbUwXshVEmeDoKZWKCjYt3CejEozZE"
+    endpoint;
 
+    constructor(chatWebhook){
+        this.endpoint = chatWebhook
+    }
+
+    async send(text) {        
         try {
-            let response = await axios.post(endpoint, { text });
-            console.log(response.statusText);
-            console.log("Mensagem enviada.")
+            let response = await axios.post(this.endpoint, { text });
+            console.log(`Resposta: ${response.statusText}`);
         } catch (error) {
             console.log("Erro na requisição ao enviar mensagem.");
             console.log(error);

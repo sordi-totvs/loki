@@ -1,15 +1,18 @@
 import { execSync } from 'child_process';
 import * as fs from "fs";
 import path from "path";
-import { Message } from './message.js';
 
 export class Audit {
     projectDir;
     master;
+    messenger;
+    maxCritical = 0;
+    maxHigh = 0;
 
-    constructor(projectDir, master = "master"){
+    constructor(projectDir, master = "master", messenger){
         this.projectDir = projectDir,
-        this.master = master
+        this.master = master,
+        this.messenger = messenger
     }
 
     result = "";
@@ -71,20 +74,24 @@ export class Audit {
 
     async sendMessage(){
         console.log("Enviando mensagem...");
-        const message = new Message();
         
         let text = ""
         text = `*LOKI*\n\n`
         text += this.getProjectInfo() + `\n`
         text += this.result
 
-        await message.send(text);
+        await this.messenger.send(text);
     }
 
     getProjectInfo(){
         const file = path.join(this.projectDir, "package.json")
         const pac = JSON.parse(fs.readFileSync(file, 'utf8'))
-        const project = `Projeto: *${pac.name}*\nVersão: ${pac.version}\n`;
+        const project = `Projeto: *${pac.name.replace("pj-gct","portal-de-contratos")}*\nVersão: ${pac.version}\n`;
         return project
+    }
+
+    setMax(critical = 0, high = 0){
+        this.maxCritical = critical;
+        this.maxHigh = high;
     }
 }
