@@ -1,21 +1,19 @@
 import { Audit } from "./audit.js";
+import * as fs from "fs"
+import { Message } from './message.js';
 
-const contratos = new Audit("C:\\git\\portal-de-contratos", "master")
-const receitas = new Audit("c:\\git\\receitas\\grr-client", "main")
-var success = 0
+const configuration = JSON.parse(fs.readFileSync("config.json"))
+var exitValue = 0
 
-try {
-     await contratos.execute()
-} catch (error) {
-     console.error(error)
-     success = 1
-}
+for (const config of configuration.configurations) {           
+     try {
+          const audit = new Audit(config.path, config.branch, new Message(config.chatWebhook));
+          audit.setMax(config.maxCritical, config.maxHigh);
+          await audit.execute()
+     } catch (error) {
+          console.error(error)
+          exitValue += 1
+     } 
+};
 
-try {
-     await receitas.execute()
-} catch (error) {
-     console.error(error)
-     success = 1
-}
-
-process.exit(success)
+process.exit(exitValue)
