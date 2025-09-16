@@ -8,12 +8,13 @@ Node.js instalado
 
 ## Execução
 
-Instalar dependências, revisar os dados em `config.json` e executar `index.js`
+Instalar dependências, revisar os dados em `config.json` e executar `index.js`. Ajustar git para não subir alterações no arquivo config.json.
 
 Exemplo:
 ```
 npm ci
 node index.js
+git update-index --assume-unchanged config.json  
 ```
 
 ## Arquivo config.js
