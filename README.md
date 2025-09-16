@@ -1,6 +1,6 @@
 # Loki
 
-Identifica vulnerabilidades em projetos node.js e notifica por mensagem no google chat se encontrar vulnerabilidades críticas ou altas.
+Identifica vulnerabilidades em projetos node.js e notifica por mensagem no Google Chat se encontrar vulnerabilidades críticas ou altas.
 
 ## Pré-requisitos
 
