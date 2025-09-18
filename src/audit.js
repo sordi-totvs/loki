@@ -42,7 +42,11 @@ export class Audit {
         console.log(`\nDiretório atual: ${process.cwd()}`);
         console.log(`Branch atual: ${branchBackup}`);
 
+        console.log(this.run(`git checkout ${this.master}`))
+
         this.execute();
+        
+        console.log(this.result)
 
         if ((this.counter.critical + this.counter.high > 0) && this.messenger){
             await this.sendMessage(this.result)
@@ -62,8 +66,6 @@ export class Audit {
         const auditJson = JSON.parse(auditOutput);
         
         this.vulnCount(auditJson);
-        
-        console.log(this.result)
     }
 
     vulnCount(auditJson){    
