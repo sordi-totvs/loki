@@ -1,6 +1,6 @@
-import { execSync } from 'child_process';
 import * as fs from "fs";
 import path from "path";
+import {Shell} from "./shell.js"
 
 export class Audit {
     projectDir;
@@ -8,37 +8,43 @@ export class Audit {
     messenger;
     maxCritical = 0;
     maxHigh = 0;
+    counter = {
+        critical: 0,
+        high: 0,
+        moderate: 0,
+        low: 0
+    }
+    shell;
+    
 
     constructor(projectDir, master = "master", messenger){
         this.projectDir = projectDir,
         this.master = master,
         this.messenger = messenger
+
+        this.shell = new Shell(projectDir);
     }
 
     result = "";
 
-    async execute(){
+    run(command){
+        return this.shell.run(command)
+    }
+
+    async stashAndExecute(){
         if (!fs.existsSync(".git")){
             throw "Não é um diretório GIT válido."
         }
 
         this.run(`git stash -u `)
         const branchBackup = this.run('git rev-parse --abbrev-ref HEAD');
-
+        
         console.log(`\nDiretório atual: ${process.cwd()}`);
         console.log(`Branch atual: ${branchBackup}`);
-        console.log("Executando npm audit...")
-        const auditOutput = this.run('npm audit --json');
-        const auditJson = JSON.parse(auditOutput);
 
-        let critical = this.vulnCount(auditJson, "critical")
-        let high = this.vulnCount(auditJson, "high")
-        let moderate = this.vulnCount(auditJson, "moderate")
-        let low = this.vulnCount(auditJson, "low")
-        
-        console.log(this.result)
+        this.execute();
 
-        if (critical+high > 0){
+        if ((this.counter.critical + this.counter.high > 0) && this.messenger){
             await this.sendMessage(this.result)
         } else {
             console.log(`Mensagem não será enviada.`)
@@ -50,26 +56,24 @@ export class Audit {
         }
     }
 
-    run(command, options = {}) {
-        try {
-            return execSync(command, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], cwd: this.projectDir, ...options }).trim();
-        } catch (error) {
-
-            // Para npm audit, status 1 é esperado se houver vulnerabilidades
-            if (command.includes('npm audit') && error.status === 1) {
-                return error.stdout.trim();
-            }
-
-            console.error(`Erro ao executar comando '${command}': ${error.message}`);
-            process.exit(1);
-        }
+    execute(){
+        console.log("Executando npm audit...")
+        const auditOutput = this.run('npm audit --json');
+        const auditJson = JSON.parse(auditOutput);
+        
+        this.vulnCount(auditJson);
+        
+        console.log(this.result)
     }
 
-    vulnCount(auditJson, auditLevel){    
+    vulnCount(auditJson){    
         const vulns = Object.values(auditJson.vulnerabilities || {});
-        let count = vulns.filter(vuln => vuln.severity.toLowerCase() === auditLevel.toLowerCase()).length;
-        this.result += `${(this.result!="" ? `\n` : "")}Encontradas ${count} vulnerabilidades "${auditLevel}"`;
-        return count
+
+        for (const sev of ["critical", "high", "moderate", "low"]){                
+            let count = vulns.filter(vuln => vuln.severity.toLowerCase() === sev.toLowerCase()).length;
+            this.result += `${(this.result!="" ? `\n` : "")}Encontradas ${count} vulnerabilidades "${sev}"`;
+            this.counter[sev] = count
+        }
     }
 
     async sendMessage(){
@@ -93,5 +97,9 @@ export class Audit {
     setMax(critical = 0, high = 0){
         this.maxCritical = critical;
         this.maxHigh = high;
+    }
+
+    getResult(){
+        return this.result
     }
 }

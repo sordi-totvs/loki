@@ -9,7 +9,7 @@ for (const config of configuration.configurations) {
      try {
           const audit = new Audit(config.path, config.branch, new Message(config.chatWebhook));
           audit.setMax(config.maxCritical, config.maxHigh);
-          await audit.execute()
+          await audit.stashAndExecute()
      } catch (error) {
           console.error(error)
           exitValue += 1
