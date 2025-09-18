@@ -3,12 +3,22 @@ import { Audit } from "./src/audit.js";
 import { Repo } from './src/repo.js';
 import { Report } from './src/report.js';
 import { Email } from './src/email.js'
+import { CompareScript } from './src/compare-script.js'
 
 const configuration = JSON.parse(fs.readFileSync("backoffice.json"))
 
 var results = []
 
-for (const config of configuration.configurations) {           
+configuration.configurations.sort((a, b) => a.squad - b.squad);
+
+if (configuration.compareScript && (configuration.compareScript != "")){
+    var compare = new CompareScript(configuration.compareScript)
+}   
+
+for (const config of configuration.configurations) {    
+
+    config.projects.sort((a, b) => a.name - b.name);
+    
     for (const project of config.projects) {
         try {      
             let result = {}      
@@ -29,6 +39,14 @@ for (const config of configuration.configurations) {
             console.log(audit.getResult());
 
             result['audit'] = audit.getAuditResult();
+
+            if (compare){
+                try {
+                    result['compare'] = { log: compare.execute(repo.getPath()) }
+                } catch (error) {
+                    result['compare'] = { log: error }                    
+                }
+            }
 
             results.push(result);
         } catch (error) {

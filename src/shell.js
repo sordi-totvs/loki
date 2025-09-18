@@ -17,7 +17,7 @@ export class Shell {
                 return error.stdout.trim();
             }
 
-            console.error(`Erro ao executar comando '${command}': ${error.message}`);
+            console.error(`Erro ao executar comando '${command}': \n\t${error.message}`);
             process.exit(1);
         }
     }

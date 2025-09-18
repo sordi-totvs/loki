@@ -34,10 +34,15 @@ export class Report {
                 md += `\n|**Total** | **${sum}**|`
 
                 md += `\n##### Análise por planilha`
-                md += `\n(em breve)`
+                if(result.compare){
+                    md += `\n${this.putIcons(result.compare.log)}`
+                } else {
+                    md += `\n(resultado indisponível)`
+                }
                 md += `\n___`
-            } catch {
-                md += `[resultado inválido]`
+            } catch (error) {
+                md += `\n[resultado inválido]\n${error}`
+
             }
         }    
         
@@ -52,6 +57,13 @@ export class Report {
             return "⚠️";
         }
         return "✅";
+    }
+
+    putIcons(text){
+        text = text.replaceAll(`[OK]`, "✅")
+        text = text.replaceAll(`[ALERT]`, "⚠️")
+        text = text.replaceAll(`[X]`, "❌")
+        return text
     }
 
     getHtml(results){
