@@ -1,6 +1,13 @@
 {
     "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=**exemple**",
     "localPath": "c:\\git\\backoffice",
+    "email": {
+        "service": "gmail",
+        "auth": {
+            "user": "exemple@gmail.com",
+            "pass": "exemple!@#$%¨123456"
+        }
+    },
     "configurations": [
         {
             "squad": "GCT/GR",
