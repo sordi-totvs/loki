@@ -3,18 +3,14 @@ import path from "path";
 import {Shell} from "./shell.js"
 
 export class Audit {
+    SEVS = ["critical", "high", "moderate", "low"];
     projectDir;
     master;
     messenger;
     maxCritical = 0;
     maxHigh = 0;
-    counter = {
-        critical: 0,
-        high: 0,
-        moderate: 0,
-        low: 0
-    }
     shell;
+    auditResult;
     
 
     constructor(projectDir, master = "master", messenger){
@@ -23,9 +19,15 @@ export class Audit {
         this.messenger = messenger
 
         this.shell = new Shell(projectDir);
-    }
 
-    result = "";
+        this.auditResult = {
+            counter: {
+                critical: 0,
+                high: 0,
+                moderate: 0,
+                low: 0
+            }}
+    }
 
     run(command){
         return this.shell.run(command)
@@ -43,13 +45,14 @@ export class Audit {
         console.log(`Branch atual: ${branchBackup}`);
 
         console.log(this.run(`git checkout ${this.master}`))
+        console.log(this.run(`git pull`))
 
         this.execute();
         
-        console.log(this.result)
+        console.log(this.getResult())
 
-        if ((this.counter.critical + this.counter.high > 0) && this.messenger){
-            await this.sendMessage(this.result)
+        if ((this.auditResult.counter.critical + this.auditResult.counter.high > 0) && this.messenger){
+            await this.sendMessage(this.getResult)
         } else {
             console.log(`Mensagem não será enviada.`)
         }
@@ -71,10 +74,9 @@ export class Audit {
     vulnCount(auditJson){    
         const vulns = Object.values(auditJson.vulnerabilities || {});
 
-        for (const sev of ["critical", "high", "moderate", "low"]){                
+        for (const sev of this.SEVS){                
             let count = vulns.filter(vuln => vuln.severity.toLowerCase() === sev.toLowerCase()).length;
-            this.result += `${(this.result!="" ? `\n` : "")}Encontradas ${count} vulnerabilidades "${sev}"`;
-            this.counter[sev] = count
+            this.auditResult.counter[sev] = count
         }
     }
 
@@ -84,7 +86,7 @@ export class Audit {
         let text = ""
         text = `*LOKI*\n\n`
         text += this.getProjectInfo() + `\n`
-        text += this.result
+        text += this.getResult()
 
         await this.messenger.send(text);
     }
@@ -101,7 +103,15 @@ export class Audit {
         this.maxHigh = high;
     }
 
+    getAuditResult(){
+        return this.auditResult;
+    }
+
     getResult(){
-        return this.result
+        var result = ""
+        for (const sev of this.SEVS){
+            result += `${(result!="" ? `\n` : "")}Encontrada(s) ${this.auditResult.counter[sev]} vulnerabilidade(s) "${sev}"`;
+        }
+        return result
     }
 }
