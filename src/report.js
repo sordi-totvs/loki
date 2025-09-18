@@ -35,7 +35,7 @@ export class Report {
 
                 md += `\n##### Análise por planilha`
                 if(result.compare){
-                    md += `\n${this.putIcons(result.compare.log)}`
+                    md += `\n${result.compare.log}`
                 } else {
                     md += `\n(resultado indisponível)`
                 }
@@ -46,7 +46,7 @@ export class Report {
             }
         }    
         
-        return md
+        return this.putIcons(md)
     }
 
     getIcon(result){

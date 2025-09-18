@@ -5,7 +5,10 @@ import { Report } from './src/report.js';
 import { Email } from './src/email.js'
 import { CompareScript } from './src/compare-script.js'
 
-const configuration = JSON.parse(fs.readFileSync("backoffice.json"))
+const configFile = process.argv[2] || "backoffice.json"
+const configuration = JSON.parse(fs.readFileSync(configFile))
+
+console.log(`Configuration file = ${configFile}`);
 
 var results = []
 
@@ -57,7 +60,7 @@ for (const config of configuration.configurations) {
 
 if (configuration.email && configuration.email.auth) {
     const email = new Email(configuration.email);
-    const subject = `Backoffice - Relatório de vulnerabilidades NPM (${(new Date()).toLocaleDateString})`
+    const subject = `Backoffice - Relatório de vulnerabilidades NPM (${(new Date()).toLocaleDateString()})`
     const content = new Report().getHtml(results);
     email.send(subject, content);
 }

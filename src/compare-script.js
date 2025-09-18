@@ -14,7 +14,7 @@ export class CompareScript {
         const to = path.join(this.scriptPath, "package-lock.json")
 
         if (!fs.existsSync(from)){
-            throw `Arquivo não encontrado: package-lock.json`
+            throw `[ALERT] Arquivo não encontrado: package-lock.json`
         }
 
         fs.copyFileSync(from, to)

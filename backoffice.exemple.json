@@ -6,8 +6,10 @@
         "auth": {
             "user": "exemple@gmail.com",
             "pass": "exemple!@#$%¨123456"
-        }
+        },
+        "dest": "exemple@totvs.com.br"
     },
+    "compareScript": "C:\\git\\compare-package",
     "configurations": [
         {
             "squad": "GCT/GR",

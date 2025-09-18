@@ -44,3 +44,11 @@ node backoffice.js
 ```
 
 * Utilize o arquivo `backoffice.exemple.json` para gerar o seu arquivo `backoffice.json`
+
+* O primeiro argumento passado para o script poderá ser o nome de um arquivo json, que será usado em vez do `backoffice.json`
+
+Exemplo:
+```
+npm ci
+node backoffice.js backoffice.test.json
+```
