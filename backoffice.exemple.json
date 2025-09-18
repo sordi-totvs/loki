@@ -1,0 +1,16 @@
+{
+    "chatWebhook": "https://chat.googleapis.com/v1/spaces/AAQAxmXEEek/messages?key=**exemple**",
+    "localPath": "c:\\git\\backoffice",
+    "configurations": [
+        {
+            "squad": "GCT/GR",
+            "projects": [
+                {
+                    "name": "Portal de Contratos",
+                    "git": "https://code.engpro.totvs.com.br/totvs-suprimentos/portal-de-contratos.git",
+                    "branch": "master"
+                }
+            ]
+        }
+    ]
+}
